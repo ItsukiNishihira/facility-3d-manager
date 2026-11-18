@@ -44,6 +44,8 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
 .legend span{display:inline-flex;align-items:center;gap:4px}
 .dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex:none}
 #panel{background:var(--panel);border-left:1px solid var(--line);overflow:auto;padding:14px;padding-bottom:calc(14px + env(safe-area-inset-bottom))}
+#sheetGrip{display:none;justify-content:center;align-items:center;height:22px;background:var(--panel);border:0;border-top:1px solid var(--line2);border-radius:16px 16px 0 0;cursor:pointer;touch-action:none;padding:0;width:100%}
+#sheetGrip::before{content:'';width:42px;height:5px;border-radius:3px;background:var(--line2)}
 .panelHead{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .chip{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;background:#0d1522;border:1px solid var(--line2);white-space:nowrap}
 .c-red{--c:var(--red)}.c-yellow{--c:var(--yellow)}.c-blue{--c:var(--blue)}.c-gray{--c:var(--gray)}.c-green{--c:var(--green)}
@@ -91,9 +93,14 @@ dl.info{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:13px;
 @media(max-width:850px){
  #storeSel{flex:1 1 auto;max-width:none}#userName{display:none}.hrow .spacer{display:none}.hrow{gap:6px}.logo{font-size:14px}
  #modelPage{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr)}
- #modelPage.open{grid-template-rows:minmax(0,42fr) minmax(0,58fr)}
- #panel{display:none;border-left:0;border-top:1px solid var(--line2);border-radius:16px 16px 0 0}
+ /* 詳細は画面下 1/3。つまみをタップ／スワイプで 2/3 まで広げられる */
+ #modelPage.open{grid-template-rows:minmax(0,2fr) auto minmax(0,1fr)}
+ #modelPage.open.full{grid-template-rows:minmax(0,1fr) auto minmax(0,2fr)}
+ #panel{display:none;border-left:0;padding-top:0}
  #modelPage.open #panel{display:block}#modelPage.open .legend{display:none}
+ #modelPage.open #sheetGrip{display:flex}
+ #panel .panelHead{position:sticky;top:0;z-index:2;background:var(--panel);padding:2px 0 6px}
+ #panel .panelHead h3{margin:0}
  .page{padding:12px}
  .cal .day{min-height:64px;padding:2px}.cal.week .day{min-height:200px}.ev{font-size:10px;padding:2px 3px}
  .photos{grid-template-columns:1fr}
@@ -116,6 +123,7 @@ dl.info{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:13px;
 <section class="page" id="modelPage">
  <div id="view"><div class="toolbar"><button class="btn small" id="homeBtn">全景</button><button class="btn small" id="explodeBtn">階層展開</button><select id="floorSel" aria-label="表示階"></select><button class="btn small" id="exitRoomBtn" style="display:none">← 建物に戻る</button></div>
   <canvas id="c"></canvas><div class="legend" id="legend"></div></div>
+ <button id="sheetGrip" type="button" aria-label="詳細の表示サイズを切り替え"></button>
  <aside id="panel"></aside>
 </section>
 <section class="page" id="dashboardPage" hidden></section>
