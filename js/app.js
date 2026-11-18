@@ -208,7 +208,23 @@ $('exitRoomBtn').onclick = () => exitRoomView();
 function onPickLocation(type, loc) {   // building.js から呼ばれる
   S.sel = { type, loc }; highlight(S.sel); $('modelPage').classList.add('open'); renderPanel();
 }
-function closeSel() { if (typeof exitRoomView === 'function') exitRoomView(); S.sel = null; highlight(null); $('modelPage').classList.remove('open'); if (S.view === 'model' && S.me) renderPanel() }
+function closeSel() { if (typeof exitRoomView === 'function') exitRoomView(); S.sel = null; highlight(null); $('modelPage').classList.remove('open', 'full'); if (S.view === 'model' && S.me) renderPanel() }
+
+// スマホ：詳細シートのつまみ。タップで 1/3 ⇔ 2/3、上スワイプで広げ下スワイプで縮める（1/3 で下スワイプなら閉じる）
+(() => {
+  const g = $('sheetGrip'), mp = $('modelPage'); let y0 = null;
+  const setFull = on => mp.classList.toggle('full', on);
+  g.addEventListener('pointerdown', e => { y0 = e.clientY; g.setPointerCapture(e.pointerId) });
+  g.addEventListener('pointerup', e => {
+    if (y0 === null) return; const dy = e.clientY - y0; y0 = null;
+    if (Math.abs(dy) < 12) setFull(!mp.classList.contains('full'));
+    else if (dy < 0) setFull(true);
+    else if (mp.classList.contains('full')) setFull(false); else closeSel();
+  });
+  g.addEventListener('pointercancel', () => { y0 = null });
+  // 入力欄にフォーカスしたら（キーボードで狭くなるので）広げる
+  $('panel').addEventListener('focusin', e => { if (matchMedia('(max-width:850px)').matches && e.target.matches('input,textarea,select')) setFull(true) });
+})();
 
 // ───────────── 右パネル（場所ごとの案件と報告） ─────────────
 function caseCard(r) {
